@@ -7,6 +7,7 @@ use App\Menus;
 use App\Resto;
 use DB;
 use Validator;
+use Illuminate\Support\Facades\Auth;
 
 class MenusController extends Controller
 {
@@ -40,6 +41,7 @@ class MenusController extends Controller
      */
     public function updateMenu($menu_id, Request $request)
     {
+        $user = Auth::user();
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
@@ -54,12 +56,13 @@ class MenusController extends Controller
         $result = DB::select('select * from menuses where id = :menu_id LIMIT 1', ['menu_id' => $menu_id]);
         if (!empty($result)) {
           $menu = Menus::find($result[0]->id);
-          if ($menu != null) {
+          if ($menu != null && ((Resto::find($menu->resto_id))->user_id == $user->id)) {
             if ($menu->fill($request->all())->save())
               return response()->json(['success' => "The menu is update"], $this->successStatus);
             else
               return response()->json(['error'=> "error while the update"], $this->successStatus);
-          }
+          } else
+            return response()->json(['error'=> "User's restaurant not found"], $this->successStatus);
         } else {
           return response()->json(['error'=> "Restaurant not found"], $this->successStatus);
         }
@@ -71,9 +74,10 @@ class MenusController extends Controller
      * @return \Illuminate\Http\Response
      */
     private function insertMenu($request) {
+      $user = Auth::user();
       $input = $request->all();
       $results = DB::select('select * from restos where name = :name OR id = :id', ['name' => $input['resto'], 'id' => $input['resto']]);
-      if (!empty($results) && (($resto = Resto::find($results[0]->id)) != null)) {
+      if (!empty($results) && (($resto = Resto::find($results[0]->id)) != null) && $user->id == $resto->user_id) {
         $menu = new Menus([
           'name' => $input['name'],
           'description' => $input['description'],
@@ -96,8 +100,9 @@ class MenusController extends Controller
      */
     public function deleteMenu($idMenu)
     {
+      $user = Auth::user();
       $toDelete = Menus::find($idMenu);
-      if ($toDelete != null) {
+      if ($toDelete != null && (($resto = Resto::find($toDelete->resto_id)) != null) && $user->id == $resto->user_id) {
         if ($toDelete->delete())
           return response()->json(['success'=> "The Menu has been deleted"], $this->successStatus);
         else

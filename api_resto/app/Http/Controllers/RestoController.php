@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use DB;
 use App\Resto;
 use App\Http\Resources\Resto as RestoResource;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 
 class RestoController extends Controller
@@ -49,6 +50,7 @@ class RestoController extends Controller
    */
   public function registerRestos(Request $request)
   {
+      $user = Auth::user();
       $validator = Validator::make($request->all(), [
           'name' => 'required',
           'categorie' => 'required',
@@ -68,8 +70,10 @@ class RestoController extends Controller
       }
 
       $input = $request->all();
-      if ($resto = Resto::create($input))
+      if ($resto = Resto::create($input)) {
+        $user->resto()->save($resto);
         return response()->json(['success'=> "The restaurant has been created"], $this->successStatus);
+      }
       else
         return response()->json(['error'=> "error while the creating please try again"], $this->successStatus);
   }
@@ -98,18 +102,25 @@ class RestoController extends Controller
       if ($validator->fails()) {
           return response()->json(['error'=>$validator->errors()], 401);
       }
+      return response()->json($this->updateRestoAction($request), $this->successStatus);
+  }
 
-      $input = $request->all();
-      $result = DB::select('select * from restos where name = :name LIMIT 1', ['name' => $input['name']]);
+  private function updateRestoAction($request) {
+    $user = Auth::user();
+    $input = $request->all();
+    $result = DB::select('select * from restos where name = :name LIMIT 1', ['name' => $input['name']]);
+    if (empty($result))
+      return ['error'=> "Restaurant not found"];
+    else
       $resto = Resto::find($result[0]->id);
-      if ($resto != null) {
-        if ($resto->fill($request->all())->save())
-          return response()->json(['success'=> "The restaurant is update"], $this->successStatus);
-        else
-          return response()->json(['error'=> "error while the updating"], $this->successStatus);
-      } else {
-        return response()->json(['error'=> "Restaurant not found"], $this->successStatus);
-      }
+    if ($resto != null && $resto->user_id == $user->id) {
+      if ($resto->fill($request->all())->save())
+        return ['success'=> "The restaurant is update"];
+      else
+        return ['error'=> "error while the updating"];
+    } else {
+      return ['error'=> "Restaurant not found"];
+    }
   }
 
   /**
@@ -119,8 +130,9 @@ class RestoController extends Controller
    */
   public function deleteRestos($id)
   {
+    $user = Auth::user();
     $toDelete = Resto::find($id);
-    if ($toDelete != null) {
+    if ($toDelete != null && $user->id == $toDelete->user_id) {
       $toDelete->menus()->delete();
       $toDelete->avis()->delete();
       if ($toDelete->delete())
