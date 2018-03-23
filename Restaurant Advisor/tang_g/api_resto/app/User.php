@@ -31,4 +31,8 @@ class User extends Authenticatable
     public function avis() {
       return $this->hasMany("App\Avis");
     }
+
+    public function resto() {
+      return $this->hasMany("App\\resto");
+    }
 }

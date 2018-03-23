@@ -16,6 +16,7 @@ class CreateRestosTable extends Migration
         Schema::create('restos', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
+            $table->integer('user_id')->nullable();
             $table->string('categorie');
             $table->string('description');
             $table->integer('note');

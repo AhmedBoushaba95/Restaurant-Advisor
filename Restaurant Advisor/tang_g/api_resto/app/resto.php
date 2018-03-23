@@ -14,6 +14,7 @@ class resto extends Model
    */
   protected $fillable = [
     'name',
+    'user_id',
     'categorie',
     'description',
     'note',
@@ -32,5 +33,9 @@ class resto extends Model
 
   public function avis() {
     return $this->hasMany("App\Avis");
+  }
+
+  public function user() {
+    return $this->hasOne("App\User");
   }
 }

@@ -92,6 +92,6 @@ class PassportController extends Controller
     public function getUser()
     {
         $user = Auth::user();
-        return response()->json(['users' => $user], $this->successStatus);
+        return response()->json(['user' => $user, 'resto' => $user->resto()->get()], $this->successStatus);
     }
 }
