@@ -94,4 +94,23 @@ class PassportController extends Controller
         $user = Auth::user();
         return response()->json(['user' => $user, 'resto' => $user->resto()->get()], $this->successStatus);
     }
+
+    /**
+     * delete user
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteUser()
+    {
+        $user = Auth::user();
+        $restos = $user->resto()->get();
+        foreach ($restos as $resto)
+          $resto->menus()->delete();
+        $user->avis()->delete();
+        $user->resto()->delete();
+        if ($user->delete())
+          return response()->json(['success' => 'User delete with success'], $this->successStatus);
+        else
+          return response()->json(['error' => 'Try again'], 400);
+    }
 }

@@ -12,9 +12,9 @@
 */
 
 Route::get('/', function () {
-  $resto = App\Resto::find(1);
-  var_dump($resto);
+
 });
 
-Route::get('login',array('as'=>'login',function(){
+Route::get('login',array('as' => 'login', function() {
+
 }));
