@@ -56,12 +56,12 @@ class AvisController extends Controller
           if ($avis->fill($request->all())->save())
             return response()->json(['success' => "Opinion is update"], $this->successStatus);
           else
-            return response()->json(['error'=> "error while the update"], $this->successStatus);
+            return response()->json(['error'=> "error while the update"], 400);
         }
         else
-          return response()->json(['error'=> "You re not the user who post this opinion"], $this->successStatus);
+          return response()->json(['error'=> "You re not the user who post this opinion"], 405);
       } else
-        return response()->json(['error'=> "Opinion not found"], $this->successStatus);
+        return response()->json(['error'=> "Opinion not found"], 404);
     }
   }
 
@@ -79,12 +79,12 @@ class AvisController extends Controller
         if ($avis->delete())
           return response()->json(['success' => "Opinion is delete"], $this->successStatus);
         else
-          return response()->json(['error'=> "error while the deleting"], $this->successStatus);
+          return response()->json(['error'=> "error while the deleting"], 400);
       }
       else
-        return response()->json(['error'=> "You re not the user who post this opinion"], $this->successStatus);
+        return response()->json(['error'=> "You re not the user who post this opinion"], 405);
     } else
-      return response()->json(['error'=> "Opinion not found"], $this->successStatus);
+      return response()->json(['error'=> "Opinion not found"], 404);
   }
 
   private function insertAvis($idResto, $idUser, $request) {
@@ -116,7 +116,7 @@ class AvisController extends Controller
     if ($resto != null)
       return response()->json(['avis' => $resto->avis()->get()], $this->successStatus);
     else
-      return response()->json(['error'=> "Restaurant not found"], $this->successStatus);
+      return response()->json(['error'=> "Restaurant not found"], 404);
   }
 
   public function getOpinion($idAvis) {

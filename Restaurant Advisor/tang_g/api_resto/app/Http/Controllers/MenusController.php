@@ -48,9 +48,8 @@ class MenusController extends Controller
             'price' => 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'
         ]);
 
-        if ($validator->fails()) {
+        if ($validator->fails())
             return response()->json(['error'=>$validator->errors()], 401);
-        }
 
         $input = $request->all();
         $result = DB::select('select * from menuses where id = :menu_id LIMIT 1', ['menu_id' => $menu_id]);
@@ -60,11 +59,11 @@ class MenusController extends Controller
             if ($menu->fill($request->all())->save())
               return response()->json(['success' => "The menu is update"], $this->successStatus);
             else
-              return response()->json(['error'=> "error while the update"], $this->successStatus);
+              return response()->json(['error'=> "error while the update"], 400);
           } else
-            return response()->json(['error'=> "User's restaurant not found"], $this->successStatus);
+            return response()->json(['error'=> "User's restaurant not found"], 404);
         } else {
-          return response()->json(['error'=> "Restaurant not found"], $this->successStatus);
+          return response()->json(['error'=> "Restaurant not found"], 404);
         }
     }
 
@@ -106,9 +105,9 @@ class MenusController extends Controller
         if ($toDelete->delete())
           return response()->json(['success'=> "The Menu has been deleted"], $this->successStatus);
         else
-          return response()->json(['success'=> "error while the deleting"], $this->successStatus);
+          return response()->json(['error'=> "error while the deleting"], 400);
       } else
-        return response()->json(['success'=> "Menu Not Found"], $this->successStatus);
+        return response()->json(['error'=> "Menu Not Found"], 404);
     }
 
     /**
@@ -122,6 +121,6 @@ class MenusController extends Controller
       if ($menu != null)
         return response()->json(['Menu'=> $menu], $this->successStatus);
       else
-        return response()->json(['error'=> "Menu Not Found"], $this->successStatus);
+        return response()->json(['error'=> "Menu Not Found"], 404);
     }
 }

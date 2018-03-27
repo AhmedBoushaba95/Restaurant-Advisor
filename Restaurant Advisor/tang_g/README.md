@@ -141,8 +141,8 @@
 
 ## For the opinion insert and update :
 
-**Route for insert = "/avis/register/{idResto}/{idUser}"**
-**Route for update = "/avis/update/{idAvis}/{idUser}"**
+**Route for insert = "/avis/register/{idResto}"**
+**Route for update = "/avis/update/{idAvis}"**
 **Format Post :
   {
     'description' => {Whatever},
@@ -159,7 +159,19 @@
 
 ## For the opinion deleting :
 
-**Route for delete = "/avis/delete/{idAvis}/{idUser}"**
+**Route for delete = "/avis/delete/{idAvis}"**
+**Format GET**
+
+###### + dont forget the header !!
+
+**'headers' => [
+    'Accept' => 'application/json',
+    'Authorization' => 'Bearer ' . $accessTokenGetInTheLoginPost,
+]**
+
+## For the current user deleting :
+
+**Route for delete = "/deleteUser"**
 **Format GET**
 
 ###### + dont forget the header !!
