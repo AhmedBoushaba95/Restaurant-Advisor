@@ -2,6 +2,8 @@
 
 **Make sure php => 7.1  is install in your machine !!**
 
+## This Project use LARAVEL MIGRATION !!
+
 ## For Migrate all table :
 
 ###### php artisan migrate
