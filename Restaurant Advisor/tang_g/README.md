@@ -2,7 +2,7 @@
 
 **Make sure php => 7.1  is install in your machine !!**
 
-## This Project use LARAVEL MIGRATION !!
+## This Project use LARAVEL MIGRATION !! But you have a virgin sql database in the project
 
 ## For Migrate all table :
 
