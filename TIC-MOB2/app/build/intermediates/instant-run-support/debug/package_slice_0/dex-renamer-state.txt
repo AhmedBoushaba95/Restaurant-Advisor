@@ -1,0 +1,4 @@
+#Fri Apr 06 16:35:25 CEST 2018
+base.0=C\:\\Users\\Utilisateur\\Desktop\\PREP'ETNA2\\TIC-MOB2\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\152
+path.0=classes.dex
+renamed.0=classes.dex
